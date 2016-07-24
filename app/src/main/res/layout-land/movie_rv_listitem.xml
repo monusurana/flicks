@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2016 Monu Surana
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    android:background="@android:color/white"
+    android:elevation="4dp"
+    android:orientation="vertical"
+    android:paddingRight="8dp">
+
+    <ImageView
+        android:id="@+id/ivPoster"
+        android:layout_width="300dp"
+        android:layout_height="168dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ivPoster"
+        android:layout_toRightOf="@+id/ivPoster"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        tools:text="Lagend of Tarzan"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvOverview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ivPoster"
+        android:layout_alignLeft="@+id/tvTitle"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignStart="@+id/tvTitle"
+        android:layout_below="@+id/tvTitle"
+        android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:maxLines="5"
+        android:minLines="1"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        tools:text="New Text" />
+</RelativeLayout>
