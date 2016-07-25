@@ -108,10 +108,15 @@ public class MovieActivity extends AppCompatActivity implements MovieRecyclerVie
         call.enqueue(new Callback<NowPlayingMovies>() {
             @Override
             public void onResponse(Call<NowPlayingMovies> call, Response<NowPlayingMovies> response) {
-                List<Movie> movie = response.body().getMovies();
+                List<Movie> movies = response.body().getMovies();
 
                 mMovies.clear();
-                mMovies.addAll(movie);
+
+                for (Movie movie : movies) {
+                    if (movie.getBackdropPath() != null)
+                        mMovies.add(movie);
+                }
+
                 mMovieRecyclerViewAdapter.updateAdapter(mMovies);
             }
 
@@ -139,6 +144,18 @@ public class MovieActivity extends AppCompatActivity implements MovieRecyclerVie
     @Override
     public void onItemClick(Movie item, View parent) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(INTENT_MOVIE_DETAIL, item);
+        startActivity(intent);
+    }
+
+    /**
+     * RecyclerView OnClick for playing youtube video
+     * @param item
+     * @param parent
+     */
+    @Override
+    public void playYoutubeVideo(Movie item, View parent) {
+        Intent intent = new Intent(this, YoutubePlayerActivity.class);
         intent.putExtra(INTENT_MOVIE_DETAIL, item);
         startActivity(intent);
     }

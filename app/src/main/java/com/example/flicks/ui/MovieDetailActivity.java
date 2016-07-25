@@ -16,12 +16,14 @@
 
 package com.example.flicks.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -50,6 +52,7 @@ import java.util.List;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -112,7 +115,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mCollapsingToolbarLayout.setTitle(mMovie.getTitle());
         mCollapsingToolbarLayout.setExpandedTitleColor(mTransparent);
 
-        Picasso.with(this).load(Url).into(mImage, new Callback() {
+        Picasso.with(mImage.getContext()).load(Url).into(mImage, new Callback() {
             @Override
             public void onSuccess() {
                 Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
@@ -229,5 +232,16 @@ public class MovieDetailActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(palette.getDarkMutedColor(mPrimaryDark));
         }
+    }
+
+    /**
+     * Fab Icon onClick event handler
+     * @param fabButon
+     */
+    @OnClick(R.id.fab)
+    public void playVideo(FloatingActionButton fabButon) {
+        Intent intent = new Intent(this, YoutubePlayerActivity.class);
+        intent.putExtra(MovieActivity.INTENT_MOVIE_DETAIL, mMovie);
+        startActivity(intent);
     }
 }

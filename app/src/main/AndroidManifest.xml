@@ -37,7 +37,11 @@
         </activity>
 
         <activity android:name=".ui.MovieDetailActivity"
-            android:parentActivityName=".ui.MovieActivity"></activity>
+            android:parentActivityName=".ui.MovieActivity"/>
+
+        <activity android:name=".ui.YoutubePlayerActivity"
+            android:parentActivityName=".ui.MovieActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

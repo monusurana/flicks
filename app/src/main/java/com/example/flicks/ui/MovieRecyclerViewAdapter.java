@@ -22,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,7 +38,8 @@ import butterknife.ButterKnife;
 public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final String IMAGE_URL_PORTRAIT = "https://image.tmdb.org/t/p/w185";
     public static final String IMAGE_URL_LANDSCAPE = "https://image.tmdb.org/t/p/w300";
-    private static final int TYPE_ITEM = 1;
+    private static final int TYPE_DEFAULT = 0;
+    private static final int TYPE_HIGH_RATING = 1;
 
     private int mOrientation;
     private List<Movie> mItems;
@@ -55,6 +57,8 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
      */
     public interface OnItemClickListener {
         void onItemClick(Movie item, View parent);
+
+        void playYoutubeVideo(Movie item, View parent);
     }
 
     /**
@@ -71,44 +75,81 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View itemView = inflater.inflate(R.layout.movie_rv_listitem, parent, false);
+        View itemView;
 
-        return new ViewHolderItem(itemView);
+        if (viewType == TYPE_DEFAULT) {
+            itemView = inflater.inflate(R.layout.movie_rv_listitem, parent, false);
+            return new ViewHolderItem(itemView);
+        } else if (viewType == TYPE_HIGH_RATING) {
+            itemView = inflater.inflate(R.layout.movie_rv_listitem_high, parent, false);
+            return new ViewHolderHighItem(itemView);
+        }
+
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         Movie movie = mItems.get(position);
 
-        ImageView posterView = ((ViewHolderItem) holder).ivPoster;
-        TextView titleView = ((ViewHolderItem) holder).tvTitle;
-        TextView overviewView = ((ViewHolderItem) holder).tvOverview;
+        if (holder instanceof ViewHolderItem) {
+            ImageView posterView = ((ViewHolderItem) holder).ivPoster;
+            TextView titleView = ((ViewHolderItem) holder).tvTitle;
 
-        titleView.setText(movie.getTitle());
-        overviewView.setText(movie.getOverview());
+            titleView.setText(movie.getTitle());
 
-        if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-            String Url = IMAGE_URL_LANDSCAPE;
-            Url += movie.getBackdropPath();
+            TextView overviewView = ((ViewHolderItem) holder).tvOverview;
+            overviewView.setText(movie.getOverview());
 
-            Picasso.with(posterView.getContext()).load(Url)
-                    .noFade()
-                    .resize(300, 0)
-                    .placeholder(R.drawable.placeholder_movie_landscape)
-                    .error(R.drawable.placeholder_movie_landscape)
-                    .into(((ViewHolderItem) holder).ivPoster);
+            if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                String Url = IMAGE_URL_LANDSCAPE;
+                Url += movie.getBackdropPath();
+
+                Picasso.with(posterView.getContext()).load(Url)
+                        .noFade()
+                        .resize(300, 0)
+                        .placeholder(R.drawable.placeholder_movie_landscape)
+                        .error(R.drawable.placeholder_movie_landscape)
+                        .into(((ViewHolderItem) holder).ivPoster);
+            } else {
+                String Url = IMAGE_URL_PORTRAIT;
+                Url += movie.getPosterPath();
+
+
+                Picasso.with(posterView.getContext()).load(Url)
+                        .resize(131, 181)
+                        .noFade()
+                        .placeholder(R.drawable.placeholder_movie)
+                        .error(R.drawable.placeholder_movie)
+                        .into(((ViewHolderItem) holder).ivPoster);
+            }
         } else {
-            String Url = IMAGE_URL_PORTRAIT;
-            Url += movie.getPosterPath();
 
-            Picasso.with(posterView.getContext()).load(Url)
-                    .resize(131, 181)
+            TextView titleView = ((ViewHolderHighItem) holder).tvTitle;
+            titleView.setText(movie.getTitle());
+
+            ImageView posterView = ((ViewHolderHighItem) holder).ivPoster;
+            String UrlPoster = IMAGE_URL_PORTRAIT;
+            UrlPoster += movie.getPosterPath();
+
+            Picasso.with(posterView.getContext()).load(UrlPoster)
+                    .resize(130, 181)
                     .noFade()
                     .placeholder(R.drawable.placeholder_movie)
                     .error(R.drawable.placeholder_movie)
-                    .into(((ViewHolderItem) holder).ivPoster);
-        }
+                    .into(((ViewHolderHighItem) holder).ivPoster);
 
+            ImageView backDropView = ((ViewHolderHighItem) holder).ivBackdrop;
+
+            String UrlBackdrop = IMAGE_URL_LANDSCAPE;
+            UrlBackdrop += movie.getBackdropPath();
+            Picasso.with(backDropView.getContext()).load(UrlBackdrop)
+                    .noFade()
+                    .resize(0, 181)
+                    .placeholder(R.drawable.placeholder_movie_landscape)
+                    .error(R.drawable.placeholder_movie_landscape)
+                    .into(((ViewHolderHighItem) holder).ivBackdrop);
+        }
     }
 
     @Override
@@ -121,7 +162,10 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        return TYPE_ITEM;
+        if (mOrientation == Configuration.ORIENTATION_PORTRAIT && mItems.get(position).getVoteAverage() > 5.0)
+            return TYPE_HIGH_RATING;
+        else
+            return TYPE_DEFAULT;
     }
 
     /**
@@ -152,6 +196,41 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             ButterKnife.bind(this, itemView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null)
+                        mListener.onItemClick(mItems.get(getLayoutPosition()), v);
+                }
+            });
+        }
+    }
+
+    /**
+     * View Holder for Recycler View high rating Item
+     */
+    public class ViewHolderHighItem extends RecyclerView.ViewHolder {
+        @BindView(R.id.ivPoster)
+        ImageView ivPoster;
+        @BindView(R.id.tvTitle)
+        TextView tvTitle;
+        @BindView(R.id.ivBackdrop)
+        ImageView ivBackdrop;
+        @BindView(R.id.flBackdrop)
+        FrameLayout flBackdrop;
+
+        public ViewHolderHighItem(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+            flBackdrop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null)
+                        mListener.playYoutubeVideo(mItems.get(getLayoutPosition()), v);
+                }
+            });
+
+            ivPoster.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mListener != null)

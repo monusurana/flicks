@@ -16,20 +16,12 @@
 
 package com.example.flicks.data;
 
-import android.net.ParseException;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -47,42 +39,9 @@ public class MovieClient {
     private static final String API_KEY = "0634e04af2d31142f100771861ab7f39";
     private static final String PARAM_API_KEY = "api_key";
     private static final String GSON_DATE_FORMAT = "yyyy-MM-dd";
-    public static final String TMDB_DATE_PATTERN = "yyyy-MM-dd";
-    private static final SimpleDateFormat TMDB_DATE_FORMAT = new SimpleDateFormat(TMDB_DATE_PATTERN);
 
     private Retrofit mRetrofit;
     private OkHttpClient mOkHttpClient;
-
-//    public static GsonBuilder getGsonBuilder() {
-//        GsonBuilder builder = new GsonBuilder();
-//
-//        // class types
-//        builder.registerTypeAdapter(Integer.class, new JsonDeserializer<Integer>() {
-//            @Override
-//            public Integer deserialize(JsonElement json, Type typeOfT,
-//                                       JsonDeserializationContext context) throws JsonParseException {
-//                return json.getAsInt();
-//            }
-//        });
-//
-//        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-//            @Override
-//            public Date deserialize(JsonElement json, Type typeOfT,
-//                                    JsonDeserializationContext context) throws JsonParseException {
-//
-//                try {
-//                    return TMDB_DATE_FORMAT.parse(json.getAsString());
-//                } catch (java.text.ParseException e) {
-//                    e.printStackTrace();
-//
-//                    return null;
-//                }
-//
-//            }
-//        });
-//
-//        return builder;
-//    }
 
     protected Retrofit getRetrofit() {
         if (mRetrofit == null) {
@@ -115,7 +74,6 @@ public class MovieClient {
                             .setEncodedQueryParameter(PARAM_API_KEY, API_KEY)
                             .build();
 
-                    // Request customization: add request headers
                     Request.Builder requestBuilder = original.newBuilder()
                             .url(url);
 

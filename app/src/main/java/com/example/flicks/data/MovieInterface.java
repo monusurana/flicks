@@ -29,7 +29,8 @@ public interface MovieInterface {
     Call<NowPlayingMovies> getNowPlayingMovies(@Query("page") Integer page, @Query("language") String language);
 
     @GET("movie/{id}/credits")
-    Call<Credits> getCredits(
-            @Path("id") int id
-    );
+    Call<Credits> getCredits(@Path("id") int id);
+
+    @GET("movie/{id}/videos")
+    Call<Videos> getVideos(@Path("id") int id, @Query("language") String language);
 }

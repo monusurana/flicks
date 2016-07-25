@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2016 Monu Surana
   ~
@@ -14,10 +15,14 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <string name="app_name">Flicks</string>
-    <string name="cast">Cast</string>
-    <string name="overview">Overview</string>
-    <string name="crew">Crew</string>
-    <string name="youtube_failure">Youtube Failed!</string>
-</resources>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.YoutubePlayerActivity">
+
+    <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>
